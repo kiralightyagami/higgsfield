@@ -4,7 +4,8 @@ import { prisma } from "./db";
 import { authMiddleware, signToken, type AuthRequest } from "./auth";
 import { CreateAvatarSchema, CreateUserSchema } from "./types";
 import { createImage } from "./image";
-import { uuid } from 'uuidv4';;
+import { uuid } from 'uuidv4';import { generateVideo } from "./video";
+;
 
 
 const app = express();
@@ -98,8 +99,13 @@ app.post("/api/v1/avatar", authMiddleware, async (req, res) => {
     res.json({});
 })
 
-app.post("/api/v1/video", authMiddleware, (req, res) => {
-    res.json({});
+app.post("/api/v1/video", authMiddleware, async (req, res) => {
+    await generateVideo("The video opens with a medium, eye-level shot of a beautiful man with dark hair and warm brown eyes. She wears a magnificent, high-fashion flamingo dress with layers of pink and fuchsia feathers, complemented by whimsical pink, heart-shaped sunglasses. She walks with serene confidence through the crystal-clear, shallow turquoise water of a sun-drenched lagoon. The camera slowly pulls back to a medium-wide shot, revealing the breathtaking scene as the dress's long train glides and floats gracefully on the water's surface behind her. The cinematic, dreamlike atmosphere is enhanced by the vibrant colors of the dress against the serene, minimalist landscape, capturing a moment of pure elegance and high-fashion fantasy.", 
+        ["image url",
+          "image url",
+          "image url"
+        ], "./output/video.mp4")
+      res.json({});
 })
 
 app.get("/api/v1/video/:videoId", authMiddleware, (req, res) => {
@@ -128,12 +134,23 @@ app.get("/api/v1/models", (req, res) => {
     res.json({});
 })
 
-app.get("/api/v1/avatar/:avatarId", authMiddleware, (req, res) => {
-    res.json({});
+app.get("/api/v1/avatar/:avatarId", authMiddleware, async (req, res) => {
+    const avatars = await prisma.avatar.findMany({
+        where: {
+          userId: "1",
+        }
+      })
+      console.log(avatars);
+      res.json({avatars});
 })
 
-app.get("/api/v1/avatars", authMiddleware, (req, res) => {
-    res.json({});
+app.get("/api/v1/avatars", authMiddleware, async (req, res) => {
+    const avatars = await prisma.avatar.findMany({
+        where: {
+          userId: "1",
+        }
+      })
+      res.json({avatars});
 })
 
 app.listen(3000);
